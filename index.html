@@ -4,202 +4,170 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Generador QR Personalizado PRO</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
     body {
+      font-family: 'Poppins', sans-serif;
       background-color: #f4f4f4;
-      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 5vw;
-      margin: 0;
-      color: #333;
     }
-
     h1 {
-      color: #3e4e32;
-      margin-bottom: 5vw;
+      color: #333;
       text-align: center;
-      font-size: 6vw;
     }
-
-    .form-group {
-      margin-bottom: 4vw;
+    .controls {
       display: flex;
       flex-direction: column;
+      gap: 10px;
+      max-width: 300px;
       width: 100%;
-      max-width: 400px;
     }
-
-    label {
-      margin-bottom: 1vw;
-      font-weight: bold;
-    }
-
-    input[type="text"], input[type="color"], input[type="file"] {
-      padding: 3vw;
+    input, select, button {
+      padding: 10px;
       border-radius: 8px;
       border: 1px solid #ccc;
       font-size: 1em;
     }
-
     button {
-      margin: 2vw;
-      padding: 3vw 5vw;
-      border-radius: 8px;
-      border: none;
-      font-size: 1em;
-      font-weight: bold;
-      cursor: pointer;
-      background-color: #5f754b;
+      background-color: #333;
       color: white;
-      transition: background-color 0.3s ease;
+      cursor: pointer;
+      transition: background 0.3s;
     }
-
     button:hover {
-      background-color: #4a5d39;
+      background-color: #555;
     }
-
-    .button-group {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
     .canvas-wrapper {
+      margin-top: 20px;
       background: white;
       border-radius: 20px;
-      padding: 4vw;
-      box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
-      position: relative;
-      width: 80vw;
-      max-width: 320px;
-      height: auto;
-      margin-top: 5vw;
+      padding: 20px;
+      box-shadow: 0px 4px 20px rgba(0,0,0,0.1);
       display: flex;
       align-items: center;
       justify-content: center;
-    }
-
-    #qr-canvas {
+      width: 100%;
+      max-width: 300px;
+      aspect-ratio: 1/1;
       position: relative;
-      width: 60vw;
-      max-width: 220px;
-      height: 60vw;
-      max-height: 220px;
     }
-
+    #qr-canvas {
+      width: 100%;
+      height: 100%;
+    }
     #logo {
       position: absolute;
       top: 50%;
       left: 50%;
-      width: 20vw;
-      max-width: 60px;
+      width: 60px;
       transform: translate(-50%, -50%);
       pointer-events: none;
-      z-index: 10;
+    }
+    #message {
+      margin-top: 15px;
+      padding: 10px;
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+      border-radius: 8px;
       display: none;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    #message i {
+      font-style: normal;
+      font-size: 1.2em;
+    }
+    @media screen and (max-width: 480px) {
+      .controls, .canvas-wrapper {
+        max-width: 90%;
+      }
     }
   </style>
 </head>
 <body>
-
-  <h1>Generador QR Personalizado</h1>
-
-  <div class="form-group">
-    <label for="text">Texto o enlace para el QR:</label>
-    <input type="text" id="text" placeholder="Ej. https://miweb.com">
-  </div>
-
-  <div class="form-group">
-    <label for="filename">Nombre del archivo:</label>
-    <input type="text" id="filename" placeholder="Ej. mi_qr_personalizado">
-  </div>
-
-  <div class="form-group">
-    <label for="colorPickerLight">Color de fondo del QR:</label>
-    <input type="color" id="colorPickerLight" value="#ffffff">
-  </div>
-
-  <div class="form-group">
-    <label for="colorPickerDark">Color del QR:</label>
-    <input type="color" id="colorPickerDark" value="#000000">
-  </div>
-
-  <div class="form-group">
-    <label for="logoInput">Seleccionar logo:</label>
+  <h1>Generador QR Personalizado PRO</h1>
+  <div class="controls">
+    <input type="text" id="text" placeholder="Pega el enlace aquí">
+    <input type="text" id="filename" placeholder="Nombre del archivo">
+    <label>Color del fondo:</label>
+    <input type="color" id="bgColor" value="#ffffff">
+    <label>Color del QR:</label>
+    <input type="color" id="qrColor" value="#000000">
+    <label>Selecciona logo:</label>
     <input type="file" id="logoInput" accept="image/*">
-  </div>
-
-  <div class="button-group">
     <button onclick="generateQRCode()">Generar QR</button>
-    <button onclick="downloadQR('png')">Descargar PNG</button>
-    <button onclick="downloadQR('pdf')">Descargar PDF</button>
+    <button onclick="downloadQR('png')">Descargar en PNG</button>
+    <button onclick="downloadQR('jpeg')">Descargar en JPG</button>
   </div>
 
   <div class="canvas-wrapper" id="canvas-wrapper">
     <div id="qr-canvas"></div>
-    <img id="logo" src="" alt="Logo">
+    <img id="logo" src="" alt="Logo" style="display:none;">
   </div>
+
+  <div id="message"><i>✅</i>¡Felicidades! Descarga exitosa.</div>
 
   <script>
     let qr;
 
-    document.getElementById('logoInput').addEventListener('change', function (e) {
-      const reader = new FileReader();
-      reader.onload = function (event) {
-        const logoImg = document.getElementById('logo');
-        logoImg.src = event.target.result;
-        logoImg.style.display = 'block';
-      };
-      reader.readAsDataURL(e.target.files[0]);
-    });
-
     function generateQRCode() {
       const text = document.getElementById('text').value;
-      const colorDark = document.getElementById('colorPickerDark').value;
-      const colorLight = document.getElementById('colorPickerLight').value;
+      const bgColor = document.getElementById('bgColor').value;
+      const qrColor = document.getElementById('qrColor').value;
       const qrContainer = document.getElementById("qr-canvas");
+      const logoImg = document.getElementById("logo");
       qrContainer.innerHTML = "";
+
+      if (!text.trim()) {
+        alert("Por favor, escribe un enlace válido.");
+        return;
+      }
 
       qr = new QRCode(qrContainer, {
         text: text,
-        width: 220,
-        height: 220,
-        colorDark: colorDark,
-        colorLight: colorLight,
+        width: 260,
+        height: 260,
+        colorDark: qrColor,
+        colorLight: bgColor,
         correctLevel: QRCode.CorrectLevel.H
       });
+
+      const logoInput = document.getElementById("logoInput");
+      if (logoInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          logoImg.src = e.target.result;
+          logoImg.style.display = 'block';
+        }
+        reader.readAsDataURL(logoInput.files[0]);
+      } else {
+        logoImg.style.display = 'none';
+      }
     }
 
     function downloadQR(format) {
-      const filename = document.getElementById("filename").value || "codigoQR";
-
-      html2canvas(document.getElementById('canvas-wrapper'), {
-        backgroundColor: null
-      }).then(canvas => {
-        if (format === 'png') {
-          const link = document.createElement('a');
-          link.href = canvas.toDataURL('image/png');
-          link.download = filename + '.png';
-          link.click();
-        } else if (format === 'pdf') {
-          const { jsPDF } = window.jspdf;
-          const pdf = new jsPDF();
-          const imgData = canvas.toDataURL('image/png');
-          pdf.addImage(imgData, 'PNG', 20, 20, 170, 170);
-          pdf.save(filename + ".pdf");
-        }
+      html2canvas(document.getElementById('canvas-wrapper')).then(canvas => {
+        const link = document.createElement('a');
+        let filename = document.getElementById('filename').value.trim();
+        if (!filename) filename = 'codigoQR';
+        link.download = `${filename}.${format}`;
+        link.href = canvas.toDataURL(`image/${format}`);
+        link.click();
+        document.getElementById('message').style.display = 'flex';
+        setTimeout(() => {
+          document.getElementById('message').style.display = 'none';
+        }, 3000);
       });
     }
   </script>
-
 </body>
 </html>
