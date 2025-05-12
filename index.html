@@ -17,6 +17,7 @@
       margin: 0;
       color: white;
     }
+
     .canvas-wrapper {
       background: white;
       border-radius: 20px;
@@ -30,11 +31,13 @@
       justify-content: center;
       margin-top: 20px;
     }
+
     #qr-canvas {
       position: relative;
       width: 220px;
       height: 220px;
     }
+
     #logo {
       position: absolute;
       top: 50%;
@@ -44,38 +47,61 @@
       pointer-events: none;
       z-index: 10;
     }
-    input, button {
+
+    input, button, label {
       margin-top: 10px;
       padding: 10px;
       border-radius: 8px;
       border: none;
       font-size: 1em;
     }
+
     button {
       background-color: white;
       color: #5f754b;
       font-weight: bold;
       cursor: pointer;
     }
+
+    #colorPicker {
+      padding: 5px;
+      width: 150px;
+    }
   </style>
 </head>
 <body>
 
-  <h1>Generador QR con Logo</h1>
+  <h1>Generador QR con Logo Personalizado</h1>
+  
   <input type="text" id="text" placeholder="Pega el enlace aquí">
+  <input type="color" id="colorPicker" value="#ffffff">
+  <label for="logoInput">Sube tu logo</label>
+  <input type="file" id="logoInput" accept="image/*">
+  
   <button onclick="generateQRCode()">Generar QR</button>
   <button onclick="downloadQR()">Descargar QR</button>
 
   <div class="canvas-wrapper" id="canvas-wrapper">
     <div id="qr-canvas"></div>
-    <img id="logo" src="creperia logo negro.png" alt="Logo">
+    <img id="logo" src="" alt="Logo" style="display:none;">
   </div>
 
   <script>
     let qr;
 
+    document.getElementById('logoInput').addEventListener('change', function(e) {
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const logoImg = document.getElementById('logo');
+        logoImg.src = event.target.result;
+        logoImg.style.display = 'block';
+      };
+      reader.readAsDataURL(e.target.files[0]);
+    });
+
     function generateQRCode() {
       const text = document.getElementById('text').value;
+      const bgColor = document.getElementById('colorPicker').value;
       const qrContainer = document.getElementById("qr-canvas");
       qrContainer.innerHTML = "";
 
@@ -84,8 +110,8 @@
         width: 220,
         height: 220,
         colorDark: "#000000",
-        colorLight: "#ffffff",
-        correctLevel: QRCode.CorrectLevel.H // ALTA CORRECCIÓN para dejar espacio para el logo
+        colorLight: bgColor,
+        correctLevel: QRCode.CorrectLevel.H
       });
     }
 
