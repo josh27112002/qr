@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Generador QR Personalizado PRO</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    body {
+      background-color: #5f754b;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      color: white;
+    }
+    .canvas-wrapper {
+      background: white;
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0px 0px 10px rgba(0,0,0,0.5);
+      position: relative;
+      width: 260px;
+      height: 260px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    #qr-canvas {
+      position: relative;
+      width: 220px;
+      height: 220px;
+    }
+    #logo {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 60px;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 10;
+    }
+    input, button {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      font-size: 1em;
+    }
+    button {
+      background-color: white;
+      color: #5f754b;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Generador QR con Logo</h1>
+  <input type="text" id="text" placeholder="Pega el enlace aquí">
+  <button onclick="generateQRCode()">Generar QR</button>
+  <button onclick="downloadQR()">Descargar QR</button>
+
+  <div class="canvas-wrapper" id="canvas-wrapper">
+    <div id="qr-canvas"></div>
+    <img id="logo" src="creperia logo negro.png" alt="Logo">
+  </div>
+
+  <script>
+    let qr;
+
+    function generateQRCode() {
+      const text = document.getElementById('text').value;
+      const qrContainer = document.getElementById("qr-canvas");
+      qrContainer.innerHTML = "";
+
+      qr = new QRCode(qrContainer, {
+        text: text,
+        width: 220,
+        height: 220,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H // ALTA CORRECCIÓN para dejar espacio para el logo
+      });
+    }
+
+    function downloadQR() {
+      html2canvas(document.getElementById('canvas-wrapper'), {
+        backgroundColor: "#ffffff"
+      }).then(canvas => {
+        const link = document.createElement('a');
+        link.href = canvas.toDataURL('image/png');
+        link.download = 'codigoQR.png';
+        link.click();
+      });
+    }
+  </script>
+
+</body>
+</html>
