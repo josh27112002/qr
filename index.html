@@ -69,22 +69,29 @@
       transform: translate(-50%, -50%);
       pointer-events: none;
     }
-    #message {
-      margin-top: 15px;
+    #confirmation {
+      display: none;
       padding: 10px;
       background-color: #d4edda;
       color: #155724;
       border: 1px solid #c3e6cb;
       border-radius: 8px;
-      display: none;
       font-weight: bold;
       display: flex;
       align-items: center;
       gap: 10px;
+      position: fixed;
+      top: 20%;
+      z-index: 999;
+      width: auto;
+      left: 50%;
+      transform: translateX(-50%);
+      max-width: 250px;
+      justify-content: center;
     }
-    #message i {
+    #confirmation i {
       font-style: normal;
-      font-size: 1.2em;
+      font-size: 1.5em;
     }
     @media screen and (max-width: 480px) {
       .controls, .canvas-wrapper {
@@ -94,6 +101,7 @@
   </style>
 </head>
 <body>
+
   <h1>Generador QR Personalizado PRO</h1>
   <div class="controls">
     <input type="text" id="text" placeholder="Pega el enlace aquí">
@@ -114,7 +122,9 @@
     <img id="logo" src="" alt="Logo" style="display:none;">
   </div>
 
-  <div id="message"><i>✅</i>¡Felicidades! Descarga exitosa.</div>
+  <div id="confirmation">
+    <i>✅</i> ¡Felicidades! Descarga exitosa.
+  </div>
 
   <script>
     let qr;
@@ -162,12 +172,18 @@
         link.download = `${filename}.${format}`;
         link.href = canvas.toDataURL(`image/${format}`);
         link.click();
-        document.getElementById('message').style.display = 'flex';
+        
+        // Mostrar mensaje de éxito
+        const confirmation = document.getElementById('confirmation');
+        confirmation.style.display = 'flex';
+        
+        // Ocultar el mensaje después de 3 segundos
         setTimeout(() => {
-          document.getElementById('message').style.display = 'none';
+          confirmation.style.display = 'none';
         }, 3000);
       });
     }
   </script>
+
 </body>
 </html>
