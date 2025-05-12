@@ -176,7 +176,7 @@
         link.href = canvas.toDataURL(`image/${format}`);
         link.click();
         
-        // Mostrar mensaje de éxito
+        // Mostrar mensaje de éxito solo después de hacer clic en el botón de descarga
         const confirmation = document.getElementById('confirmation');
         confirmation.style.display = 'flex';
         
